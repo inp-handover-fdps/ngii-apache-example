@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Map, View } from "ol";
+import TileLayer from "ol/layer/Tile";
+import "ol/ol.css";
+import { OSM } from "ol/source";
+import React from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const map_ref = React.useRef<HTMLDivElement>(null);
+
+  const view = React.useMemo(() => {
+    return new View({
+      center: [14133447.695112107, 4513703.814602685],
+      zoom: 15,
+      minZoom: 7,
+      maxZoom: 22,
+    });
+  }, []);
+
+  const mainMap = React.useMemo(() => {
+    return new Map({
+      layers: [new TileLayer({ source: new OSM() })],
+      view,
+    });
+  }, [view]);
+
+  React.useEffect(() => {
+    if (!mainMap) return;
+    mainMap.setTarget(map_ref.current || "");
+    return () => {
+      mainMap.setTarget("");
+    };
+  }, [mainMap]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div ref={map_ref} style={{ height: "100dvh", width: "100dvw" }}></div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
