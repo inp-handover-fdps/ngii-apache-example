@@ -15,6 +15,7 @@ function App() {
     });
   }, []);
 
+  // const { koreanMapLayer, satelliteMapLayer } = useBaseLayers();
   const { koreanMapLayer } = useBaseLayers();
 
   const mainMap = React.useMemo(() => {
