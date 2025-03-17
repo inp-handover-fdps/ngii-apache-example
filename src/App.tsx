@@ -1,8 +1,7 @@
 import { Map, View } from "ol";
-import TileLayer from "ol/layer/Tile";
 import "ol/ol.css";
-import { OSM } from "ol/source";
 import React from "react";
+import useBaseLayers from "./useBaseLayers";
 
 function App() {
   const map_ref = React.useRef<HTMLDivElement>(null);
@@ -16,12 +15,14 @@ function App() {
     });
   }, []);
 
+  const { koreanMapLayer } = useBaseLayers();
+
   const mainMap = React.useMemo(() => {
     return new Map({
-      layers: [new TileLayer({ source: new OSM() })],
+      layers: [koreanMapLayer],
       view,
     });
-  }, [view]);
+  }, [koreanMapLayer, view]);
 
   React.useEffect(() => {
     if (!mainMap) return;
